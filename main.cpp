@@ -46,8 +46,10 @@ public:
     vector<Cromossomo> populacao;
 
     GA(){
+        cout<<"Gerando população inicial: "<<endl;
         for(int i=0; i< tam_crom; i++){
             Cromossomo *c = new Cromossomo();
+            cout<< c->getValor()<<" ";
             populacao.push_back(*c);
         }
     }
@@ -56,10 +58,15 @@ public:
 
         vector<Cromossomo> ganhadores;
         int num_torneios = 0;
+        cout<<endl<<"Selecionando mais aptos:"<<endl;
 
         while(num_torneios < tam_crom){
+            cout<<"Torneio "<<num_torneios<<endl;
+            
             int posicao1 = rand() % tam_crom;
             int posicao2 = rand() % tam_crom;
+            cout<< "Indices sorteados: "<< posicao1 <<", "<<posicao2<<endl;
+            cout<< "Aptidão de ambos: "<< populacao[posicao1].aptidao << ", "<<populacao[posicao2].aptidao<<endl;
 
             if(posicao1 != posicao2){
                 num_torneios++;
@@ -70,6 +77,10 @@ public:
                     ganhadores.push_back(populacao[posicao2]);
                 }
             }
+        }
+        cout<<"Ganhadores dos torneios:"<<endl;
+        for(int i=0;i<tam_crom;i++){
+            cout<<ganhadores[i].getValor()<<" ";
         }
         return ganhadores;
     }
@@ -116,12 +127,16 @@ public:
         }
     }
 
-    static bool ordenacao(Cromossomo *c1, Cromossomo *c2){
-        return c1->getValor() < c2->getValor();
+    static bool ordenacao(Cromossomo c1, Cromossomo c2){
+        return c1.getValor() < c2.getValor();
     }
 
     void avaliacao(){
         sort(populacao.begin(), populacao.end(), ordenacao);
+        cout<<endl<<"Avaliando população"<<endl;
+        for(int i=0; i<=tam_crom;i++){
+            cout<<populacao[i].getValor()<<" ";
+        }
 
         int pop = populacao.size();
         for(int i = pop;i>=tam_crom;i--){
@@ -136,6 +151,8 @@ int main()
     //srand(time(NULL));
 
     GA *ga = new GA();
+    ga->selecao();
+    ga->avaliacao();
 
 
 }
