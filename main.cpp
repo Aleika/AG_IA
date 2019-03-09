@@ -37,7 +37,6 @@ public:
         aptidao = funcao(valor);
     }
 
-
 };
 
 class GA{
@@ -51,6 +50,7 @@ public:
             Cromossomo *c = new Cromossomo();
             cout<< c->getValor()<<" ";
             populacao.push_back(*c);
+            populacao[i].calcularFitness();
         }
     }
 
@@ -62,7 +62,7 @@ public:
 
         while(num_torneios < tam_crom){
             cout<<"Torneio "<<num_torneios<<endl;
-            
+
             int posicao1 = rand() % tam_crom;
             int posicao2 = rand() % tam_crom;
             cout<< "Indices sorteados: "<< posicao1 <<", "<<posicao2<<endl;
@@ -70,7 +70,6 @@ public:
 
             if(posicao1 != posicao2){
                 num_torneios++;
-
                 if(populacao[posicao1].aptidao < populacao[posicao2].aptidao){
                     ganhadores.push_back(populacao[posicao1]);
                 }else{
@@ -95,7 +94,6 @@ public:
 
             populacao[pos_crom].setValor(valor_mutacao);
             populacao[pos_crom].calcularFitness();
-
         }
     }
 
@@ -143,16 +141,37 @@ public:
             populacao.pop_back();
         }
     }
-
 };
 
 int main()
 {
-    //srand(time(NULL));
+    srand(time(NULL));
+
+    clock_t Ticks[3];
+    Ticks[0] = clock();
 
     GA *ga = new GA();
-    ga->selecao();
-    ga->avaliacao();
+    int num_geracoes = 0;
 
+    double tempo = 0;
+    while(tempo<=5000 && num_geracoes < 200){
+        ga->selecao();
+        ga->crossover();
+        ga->mutacao();
+        ga->avaliacao();
+
+        num_geracoes++;
+
+        Ticks[1] = clock();
+        tempo = (Ticks[1] - Ticks[0] * 1000.0/CLOCKS_PER_SEC);
+    }
+
+    for(int i = 0;i< tam_crom;i++){
+        cout << ga->populacao[i].getValor() << endl;
+    }
+
+    Ticks[2] = clock();
+    double tempoFinal = (Ticks[2] - Ticks[0] * 1000.0/CLOCKS_PER_SEC);
+    cout << " o tempo final: " << tempoFinal <<endl;
 
 }
