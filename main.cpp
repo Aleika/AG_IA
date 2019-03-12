@@ -6,7 +6,7 @@
 
 #define MIN 0
 #define MAX 100
-#define tam_crom 10
+#define tam_crom 20
 
 using namespace std;
 
@@ -19,6 +19,7 @@ public:
 
     Cromossomo(){
         valor = MIN + static_cast <double> (rand()) /( static_cast <double> (RAND_MAX/(MAX-MIN)));
+        calcularFitness();
     }
 
     double getValor() {
@@ -49,8 +50,9 @@ public:
         for(int i=0; i< tam_crom; i++){
             Cromossomo *c = new Cromossomo();
             cout<< c->getValor()<<" ";
+            //c->calcularFitness();
             populacao.push_back(*c);
-            populacao[i].calcularFitness();
+            //populacao[i].calcularFitness();
         }
     }
 
@@ -87,7 +89,7 @@ public:
     void mutacao(){
         double taxa_mutacao = ((double) rand()) / (double) RAND_MAX;
 
-        if(taxa_mutacao <= 0.025){
+        if(taxa_mutacao <= 0.01){
             int pos_crom = rand() % tam_crom;
             double random = ((double) rand()) / (double) RAND_MAX;
             double valor_mutacao = random*0.1;
@@ -154,7 +156,7 @@ int main()
     int num_geracoes = 0;
 
     double tempo = 0;
-    while(tempo<=5000 && num_geracoes < 200){
+    while(tempo<=10000 && num_geracoes < 250){
         ga->selecao();
         ga->crossover();
         ga->mutacao();
@@ -166,9 +168,14 @@ int main()
         tempo = (Ticks[1] - Ticks[0] * 1000.0/CLOCKS_PER_SEC);
     }
 
-    for(int i = 0;i< tam_crom;i++){
+    sort(ga->populacao.begin(), ga->populacao.end(), ga->ordenacao);
+
+    /*for(int i = 0;i< tam_crom;i++){
         cout << ga->populacao[i].getValor() << endl;
-    }
+    }*/
+
+    cout << endl;
+    cout << "Melhor resultado encontrado: " << ga->populacao.front().getValor() << endl;
 
     Ticks[2] = clock();
     double tempoFinal = (Ticks[2] - Ticks[0] * 1000.0/CLOCKS_PER_SEC);
