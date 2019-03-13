@@ -3,6 +3,7 @@
 #include <time.h>
 #include <vector>
 #include <algorithm>
+#include <math.h>
 
 #define MIN 0
 #define MAX 100
@@ -145,6 +146,34 @@ public:
     }
 };
 
+double mediaDaPop(vector<Cromossomo> populacao){
+    double total = 0;
+    for(int i=0; i<tam_crom;i++){
+        total+=populacao[i].getValor();
+    }
+
+    return total/tam_crom;
+}
+
+double varianciaDaPop(vector<Cromossomo> populacao){
+    double media = mediaDaPop(populacao);
+    double variancia = 0;
+
+    for(int i=0; i<tam_crom; i++){
+        variancia+= pow((populacao[i].getValor() - media),2);
+    }
+    return variancia;
+}
+
+double desvioPadraoPop(vector<Cromossomo> populacao){ //Valor alto: pontos espalhados; Valor baixo: pontos concentrados em torno da média
+    double media = mediaDaPop(populacao);
+    cout<<endl<<"media: "<<media<<endl;
+    double variancia = varianciaDaPop(populacao);
+    double desvioPadr = sqrt((1.0/(tam_crom-1))*variancia);
+    cout<<endl<<"dp: "<<desvioPadr<<endl;
+    return desvioPadr;
+}
+
 int main()
 {
     srand(time(NULL));
@@ -154,15 +183,18 @@ int main()
 
     GA *ga = new GA();
     int num_geracoes = 0;
+    double desvioPadrao = desvioPadraoPop(ga->populacao);
 
     double tempo = 0;
-    while(tempo<=10000 && num_geracoes < 250){
+    while(tempo<=10000 && num_geracoes < 250 && desvioPadrao > 0.5){
         ga->selecao();
         ga->crossover();
         ga->mutacao();
         ga->avaliacao();
 
         num_geracoes++;
+        cout << endl << endl <<"Desvio Padrão: "<< desvioPadrao << endl << endl;
+        desvioPadrao = desvioPadraoPop(ga->populacao);
 
         Ticks[1] = clock();
         tempo = (Ticks[1] - Ticks[0] * 1000.0/CLOCKS_PER_SEC);
