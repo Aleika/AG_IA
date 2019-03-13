@@ -167,10 +167,8 @@ double varianciaDaPop(vector<Cromossomo> populacao){
 
 double desvioPadraoPop(vector<Cromossomo> populacao){ //Valor alto: pontos espalhados; Valor baixo: pontos concentrados em torno da média
     double media = mediaDaPop(populacao);
-    cout<<endl<<"media: "<<media<<endl;
     double variancia = varianciaDaPop(populacao);
     double desvioPadr = sqrt((1.0/(tam_crom-1))*variancia);
-    cout<<endl<<"dp: "<<desvioPadr<<endl;
     return desvioPadr;
 }
 
@@ -186,14 +184,14 @@ int main()
     double desvioPadrao = desvioPadraoPop(ga->populacao);
 
     double tempo = 0;
-    while(tempo<=10000 && num_geracoes < 250 && desvioPadrao > 0.5){
+    while(tempo<=10000 && num_geracoes < 250 && desvioPadrao > 0.1){
         ga->selecao();
         ga->crossover();
         ga->mutacao();
         ga->avaliacao();
 
         num_geracoes++;
-        cout << endl << endl <<"Desvio Padrão: "<< desvioPadrao << endl << endl;
+        cout << endl << endl <<"Desvio Padrão: "<< desvioPadrao << endl;
         desvioPadrao = desvioPadraoPop(ga->populacao);
 
         Ticks[1] = clock();
