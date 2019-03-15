@@ -5,10 +5,11 @@
 #include <algorithm>
 #include <math.h>
 
-#define MIN 0
+#define MIN -50
 #define MAX 50
-#define tam_crom 20
-#define tam_aux 40
+#define tam_crom 100
+
+//Componentes: Aleika Alves, Ana Rute e Danielly Cristina.
 
 using namespace std;
 
@@ -93,8 +94,6 @@ public:
 
         vector<Cromossomo> filhos;
 
-        double taxa_reproducao = ((double) rand()) / (double) RAND_MAX;
-
         int num_it = 0;
         while(num_it < tam_crom/2){
 
@@ -108,7 +107,9 @@ public:
                     Cromossomo *f1 = new Cromossomo();
                     Cromossomo *f2 = new Cromossomo();
 
-                    double beta = ((double) rand()) / (double) RAND_MAX;
+                    double beta = -0.2 + static_cast <double> (rand()) /( static_cast <double> (RAND_MAX/(1.2-(-0.2))));
+
+                    cout << endl << "Cruzando cromossomos de indices " << posicao1 << " e "<< posicao2 << endl;
 
                     double val_f1 = populacao[posicao1].getValor() + beta*(populacao[posicao2].getValor() - populacao[posicao1].getValor());
                     double val_f2 = populacao[posicao2].getValor() + beta*(populacao[posicao1].getValor() - populacao[posicao2].getValor());
@@ -132,8 +133,9 @@ public:
 
         if(taxa_mutacao <= 0.015){
             int pos_crom = rand() % tam_crom;
-            double valor_mutacao = filhos[pos_crom].getValor() - 0.1;
-
+            double random = ((double) rand()) / (double) RAND_MAX;
+            double valor_mutacao = filhos[pos_crom].getValor() - random;
+            cout<< endl << endl;
             cout << "Mutacao do cromossomo " << pos_crom << endl;
             filhos[pos_crom].setValor(valor_mutacao);
             filhos[pos_crom].calcularFitness();
@@ -146,7 +148,7 @@ public:
     }
 
     static bool ordenacao(Cromossomo c1, Cromossomo c2){
-        return c1.getValor() < c2.getValor();
+        return c1.aptidao < c2.aptidao;
     }
 
     void avaliacao(){
@@ -194,19 +196,12 @@ int main()
 {
     srand(time(NULL));
 
-    /*clock_t Ticks[3];
-    Ticks[0] = clock();
-    double tempo = 0;*/
-
-
     GA *ga = new GA();
-
 
     int num_geracoes = 0;
     double desvioPadrao = ga->desvioPadraoPop();
 
-
-    while(desvioPadrao > 0.01){
+    while(desvioPadrao > pow(10,-50)){
         ga->selecao();
         vector<Cromossomo> filhos_aux;
         filhos_aux = ga->crossover();
@@ -216,8 +211,6 @@ int main()
         num_geracoes++;
         desvioPadrao = ga->desvioPadraoPop();
 
-        //Ticks[1] = clock();
-        //tempo = (Ticks[1] - Ticks[0] * 1000.0/CLOCKS_PER_SEC);
     }
 
     cout << endl << endl <<"Desvio Padrao: "<< desvioPadrao << endl;
@@ -231,8 +224,4 @@ int main()
     cout << endl;
     cout << "Melhor resultado encontrado: " << ga->populacao.front().getValor() << endl;
 
-    /*Ticks[2] = clock();
-    double tempoFinal = (Ticks[2] - Ticks[0] * 1000.0/CLOCKS_PER_SEC);
-    cout << "O tempo final: " << tempoFinal <<endl;
-    */
 }
